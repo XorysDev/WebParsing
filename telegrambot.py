@@ -16,9 +16,9 @@ def read_json():
 
 @bot.message_handler(commands=["start"])
 def bot_start(message):
-
-    bot.send_message(message.chat.id, "start pars in kloop kg...")
-    bot.send_message(message.chat.id, "please wait..")
+    print("log >> bot is running..")
+    bot.send_message(message.chat.id, "Запущен парсинг сайта KloopKG 🚀")
+    bot.send_message(message.chat.id, "ожидайте пожалуйста...")
 
     start_pars()
     data = read_json()
@@ -26,7 +26,7 @@ def bot_start(message):
     for x in data:
         bot.send_message(message.chat.id, f"№ {x} {data[x]['title']}")
 
-    message_from_bot = bot.send_message(message.chat.id, 'Выберите число новости для подробной инфоормации(1-20): ')
+    message_from_bot = bot.send_message(message.chat.id, 'Выберите номер новостей для подробной инфоормации(1-20): ')
     bot.register_next_step_handler(message_from_bot, check_number)
 
 
@@ -34,14 +34,14 @@ def check_number(message):
     keys = [str(x) for x in range(1, 21)]
     if message.text not in keys:
 
-        message_from_bot = bot.send_message(message.chat.id, "Неверно! выберите число новости для подробной "
+        message_from_bot = bot.send_message(message.chat.id, "Неверно! выберите номер новостей для подробной "
                                                              "инфоормации(1-20):")
         bot.register_next_step_handler(message_from_bot, check_number)
     else:
         data = read_json()
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
-        button1 = types.KeyboardButton("Фото")
+        button1 = types.KeyboardButton("Фото ")
         button2 = types.KeyboardButton("Описание")
 
         keyboard.add(button1, button2)
@@ -54,12 +54,14 @@ def show_info(message, number, data):
 
     if message.text == "Фото":
         bot.send_message(message.chat.id, data[number]["img"])
-        message_from_bot = bot.send_message(message.chat.id, 'Выберите число новости для подробной инфоормации(1-20): ')
+        message_from_bot = bot.send_message(message.chat.id, 'Фото новости успешно выбран!\nДальше читать новостей '
+                                                             'можно, набрав (1, 20): ')
         bot.register_next_step_handler(message_from_bot, check_number)
 
     else:
         bot.send_message(message.chat.id, data[number]["description"])
-        message_from_bot = bot.send_message(message.chat.id, 'Выберите число новости для подробной инфоормации(1-20): ')
+        message_from_bot = bot.send_message(message.chat.id, 'Описания новости успешно выбран!\nДальше читать новостей '
+                                                             'можно, набрав (1, 20): ')
         bot.register_next_step_handler(message_from_bot, check_number)
 
 
